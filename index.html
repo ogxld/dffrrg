@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnapKlon</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ======= EKRAN LOGOWANIA ======= -->
+<div id="auth-screen" class="screen">
+  <div class="auth-box">
+    <h1 class="logo">👻 SnapKlon</h1>
+
+    <div id="login-form">
+      <h2>Zaloguj się</h2>
+      <input type="email" id="login-email" placeholder="Email" autocomplete="username">
+      <input type="password" id="login-password" placeholder="Hasło" autocomplete="current-password">
+      <button onclick="loginUser()">Zaloguj</button>
+      <p class="switch-link">Nie masz konta? <a onclick="showRegister()">Zarejestruj się</a></p>
+    </div>
+
+    <div id="register-form" style="display:none">
+      <h2>Rejestracja</h2>
+      <input type="text" id="register-username" placeholder="Nazwa użytkownika (widoczna dla innych)">
+      <input type="email" id="register-email" placeholder="Email" autocomplete="username">
+      <input type="password" id="register-password" placeholder="Hasło (min. 6 znaków)" autocomplete="new-password">
+      <button onclick="registerUser()">Załóż konto</button>
+      <p class="switch-link">Masz już konto? <a onclick="showLogin()">Zaloguj się</a></p>
+    </div>
+
+    <p id="auth-error" class="error"></p>
+  </div>
+</div>
+
+<!-- ======= APLIKACJA ======= -->
+<div id="app-screen" class="screen" style="display:none">
+  <header class="topbar">
+    <span class="logo-small">👻 SnapKlon</span>
+    <span id="current-user-label"></span>
+    <button class="logout-btn" onclick="logoutUser()">Wyloguj</button>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="chat-tab">💬 Czat</button>
+    <button class="tab-btn" data-tab="stories-tab">📸 Relacje</button>
+    <button class="tab-btn" data-tab="map-tab">🗺️ Mapa</button>
+  </nav>
+
+  <!-- CZAT -->
+  <section id="chat-tab" class="tab-content active">
+    <div class="chat-layout">
+      <aside class="user-list" id="user-list">
+        <h3>Znajomi</h3>
+        <div id="users-container">Ładowanie...</div>
+      </aside>
+      <main class="chat-window">
+        <div id="chat-header">Wybierz osobę, aby rozpocząć czat</div>
+        <div id="messages-container"></div>
+        <div id="chat-input-bar" style="display:none">
+          <input type="text" id="message-input" placeholder="Napisz wiadomość..." onkeydown="if(event.key==='Enter') sendMessage()">
+          <button onclick="sendMessage()">Wyślij</button>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <!-- RELACJE / STORIES -->
+  <section id="stories-tab" class="tab-content">
+    <div class="stories-header">
+      <h2>Relacje (znikają po 24h)</h2>
+      <label class="upload-btn">
+        ➕ Dodaj relację
+        <input type="file" id="story-file-input" accept="image/*,video/*" style="display:none" onchange="uploadStory(event)">
+      </label>
+    </div>
+    <p id="story-upload-status"></p>
+    <div id="stories-grid" class="stories-grid"></div>
+  </section>
+
+  <!-- MAPA -->
+  <section id="map-tab" class="tab-content">
+    <p class="map-hint">Kliknij na mapę, aby dodać pinezkę widoczną dla wszystkich znajomych.</p>
+    <div id="map"></div>
+  </section>
+</div>
+
+<!-- Podgląd relacji na pełnym ekranie -->
+<div id="story-viewer" class="story-viewer" style="display:none" onclick="closeStoryViewer()">
+  <div class="story-viewer-content" onclick="event.stopPropagation()">
+    <span class="close-btn" onclick="closeStoryViewer()">✕</span>
+    <div id="story-viewer-media"></div>
+    <p id="story-viewer-meta"></p>
+  </div>
+</div>
+
+<!-- Firebase (compat SDK, bez buildowania) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+<!-- Leaflet (mapy) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/stories.js"></script>
+<script src="js/map.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
